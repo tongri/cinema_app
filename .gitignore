@@ -1,0 +1,6 @@
+env
+fastapi_cinema/.env
+*.idea*
+fastapi_cinema/venv
+cinema_react/node_modules
+*__pycache__*
