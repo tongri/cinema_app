@@ -18,7 +18,8 @@ async def create_order(
     db: AsyncSession = Depends(async_get_db),
     current_user: UserOut = Depends(get_current_user),
 ):
-    await OrderService(db).create_order(current_user.id, show_id, order)
+    order_id = await OrderService(db).create_order(current_user.id, show_id, order)
+    return {"id": order_id}
 
 
 @router.get("/orders/", response_model=Page[OrderOut])

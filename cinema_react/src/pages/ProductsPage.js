@@ -8,7 +8,9 @@ import ProductList from '../components/Products/ProductList'
 import {ProductForm} from '../components/forms/ProductForm'
 
 const ProductPage = () => {
-    const { items, isLoading, total, size, page } = useSelector((state) => state.products)
+    const { items, isLoading, total, size, page } = useSelector(
+        (state) => state.products
+    )
     const token = useSelector(state => state.users.token)
     const is_restaurateur = useSelector(state => state.users.is_restaurateur)
     const [isDialogOpen, setDialog] = useState(false)

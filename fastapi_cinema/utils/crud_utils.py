@@ -1,22 +1,4 @@
-from collections import namedtuple, defaultdict
-import datetime
-
-
-a = {
-    "id": 3,
-    "amount": 5,
-    "show__price": 100,
-    "show__busy": 20,
-    "show__id": 32,
-    "show__place__name": "red",
-    "show__place__size": 201,
-    "show__place__id": 1,
-    "show__film__id": 2,
-    "show__film__name": "randoe",
-    "show__film__begin_date": datetime.date(2022, 5, 25),
-    "show__film__end_date": datetime.date(2022, 5, 30),
-    "show__film__lasts_minutes": 100,
-}
+from collections import namedtuple
 
 
 def dict_fetch_all(cursor) -> list:
@@ -66,3 +48,15 @@ def from_keys_list_to_dict(keys_list: list, value, res_dict: dict):
             inner_key: from_keys_list_to_dict(keys_list, value, res_dict.get(inner_key, {})),
         }
     return value
+
+
+def prepare_bulk_create_sql(columns: list[str], obj_list: list[dict]):
+    args_dict = {}
+    params_list = []
+
+    for index, obj in enumerate(obj_list):
+        for key, value in obj.items():
+            args_dict[f"{key}_{index}"] = value
+        params_list.append(f'({", ".join([f":{column}_{index}" for column in columns])})')
+
+    return ", ".join(params_list), args_dict

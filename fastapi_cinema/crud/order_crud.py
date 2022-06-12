@@ -23,11 +23,14 @@ ORDERS_BY_SHOW = (
 
 
 async def create_order(db: AsyncSession, user_id: int, show_id: int, order: OrderIn):
-    await db.execute(
-        text("insert into orders (user_id, show_id, amount) values (:user_id, :show_id, :amount)"),
+    res = await db.execute(
+        text(
+            "insert into orders (user_id, show_id, amount) values (:user_id, :show_id, :amount) returning id"
+        ),
         {"user_id": user_id, "show_id": show_id, "amount": order.amount},
     )
     await db.commit()
+    return res.fetchone()[0]
 
 
 async def list_orders(db: AsyncSession, user_id: int):
@@ -35,6 +38,15 @@ async def list_orders(db: AsyncSession, user_id: int):
         text(f"{ORDERS_DETAILED_SELECT} where user_id = :user_id"), {"user_id": user_id}
     )
     return accumulated_dict_fetch_all(res.cursor)
+
+
+async def get_order(db: AsyncSession, order_id: int):
+    return (
+        await db.execute(
+            text("select * from orders where id = :id limit 1"),
+            {"id": order_id}
+        )
+    ).fetchone()
 
 
 async def get_orders_amount_by_show(db: AsyncSession, show_id: int):

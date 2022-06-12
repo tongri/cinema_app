@@ -32,7 +32,10 @@ export const ShowForm = ({ showId, film_id, place_id,
 
     return (
         <>
-        <Box component="form" onSubmit={submitHandler} noValidate sx={{justifyContent: "center"}}>
+        <Box
+            component="form"
+            onSubmit={submitHandler}
+            noValidate sx={{justifyContent: "center"}}>
             <SelectPage name={"place_id"} id={"place_id"} title="Choose place" handler={handleInput} selected={place_id}
                         objList={places}/>
             <SelectPage name={"film_id"} id={"film_id"} title="Choose film" handler={handleInput} selected={film_id}

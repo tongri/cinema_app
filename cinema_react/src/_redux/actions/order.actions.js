@@ -40,7 +40,7 @@ export const adminLoadOrders = (page = 1) => async (dispatch, getState) => {
     }
 }
 
-export const createOrder = (show_id, data) => async (dispatch, getState) => {
+export const createOrder = (show_id, data, orderSetter) => async (dispatch, getState) => {
     dispatch({ type: ORDER_LOADING })
 
     try {
@@ -49,6 +49,7 @@ export const createOrder = (show_id, data) => async (dispatch, getState) => {
             type: ORDER_SUCCESS,
             payload: result.data
         })
+        orderSetter(result.data.id)
     } catch (err) {
         // a?
     }

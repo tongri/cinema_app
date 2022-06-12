@@ -222,6 +222,12 @@ product_order_table = {
                 "constraints": Constraints.check("amount >= 0")
             },
             {
+                "name": "status",
+                "type": FieldTypes.varchar(30),
+                "constraints": Constraints.not_null.value,
+                "default": "default 'pending'"
+            },
+            {
                 "name": Constraints.foreign_key("product_id", product_table_name, "id", "set null")
             },
             {

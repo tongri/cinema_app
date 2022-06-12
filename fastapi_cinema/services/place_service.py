@@ -8,7 +8,7 @@ from crud.place_crud import (
     delete_place,
 )
 from schemas.place_schemas import PlaceIn, PlaceUpdate
-from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException
+from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException, NoContentException
 from utils.service_base import BaseService
 
 
@@ -40,6 +40,10 @@ class PlaceService(BaseService):
         await update_place(self.db, place_id, place)
 
     async def delete_place(self, place_id: int):
+        if not await get_place_by_id(self.db, place_id):
+            raise NoContentException
+
         if await is_place_busy(self.db, place_id):
             raise ConflictException("Place has busy shows")
+
         await delete_place(self.db, place_id)

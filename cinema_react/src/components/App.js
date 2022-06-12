@@ -13,7 +13,7 @@ import {
     PAGE_FILMS,
     PAGE_PLACES,
     PAGE_ADMIN_ORDERS,
-    PAGE_PRODUCTS
+    PAGE_PRODUCTS, PAGE_PRODUCTS_ORDERS, PAGE_REST_PRODUCTS_ORDERS
 } from '../consts/routes'
 import PublicRoute from '../routes/PublicRoute'
 import PrivateRoute from '../routes/PrivateRoute'
@@ -24,6 +24,8 @@ import PlacePage from '../pages/PlacePage'
 import OrderPage from '../pages/OrdersPage'
 import AdminOrderPage from '../pages/AdminOrdersPage'
 import ProductPage from '../pages/ProductsPage'
+import ProductOrderPage from '../pages/ProductsOrdersPage'
+import RestProductsOrdersPage from '../pages/RestProductsOrdersPage'
 
 
 export const App = () => {
@@ -45,6 +47,8 @@ export const App = () => {
                 <Route path={PAGE_ADMIN_ORDERS} element={<PrivateRoute><AdminOrderPage /></PrivateRoute>} />
                 <Route path={PAGE_PLACES} element={<AdminRoute><PlacePage /></AdminRoute>} />
                 <Route path={PAGE_PRODUCTS} element={<RestRoute><ProductPage /></RestRoute>} />
+                <Route path={PAGE_PRODUCTS_ORDERS} element={<PrivateRoute><ProductOrderPage /></PrivateRoute>} />
+                <Route path={PAGE_REST_PRODUCTS_ORDERS} element={<RestRoute><RestProductsOrdersPage /></RestRoute>} />
             </Routes>
         </BrowserRouter>
         </>

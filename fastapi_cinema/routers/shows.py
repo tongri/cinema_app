@@ -39,4 +39,4 @@ async def patch_show(
 
 @router.delete("/{show_id}/", status_code=status.HTTP_200_OK)
 async def delete_show(show_id: int, db: AsyncSession = Depends(async_get_db)):
-    return ShowService(db).delete_show(show_id)
+    return await ShowService(db).delete_show(show_id)

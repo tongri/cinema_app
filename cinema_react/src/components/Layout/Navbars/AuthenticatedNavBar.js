@@ -9,7 +9,7 @@ import React, {useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {logoutUser} from '../../../_redux/actions/users.actions'
 import {useNavigate} from 'react-router-dom'
-import {PAGE_ADMIN_ORDERS, PAGE_ORDERS} from '../../../consts/routes'
+import {PAGE_ADMIN_ORDERS, PAGE_ORDERS, PAGE_PRODUCTS_ORDERS} from '../../../consts/routes'
 
 
 const AuthenticatedNavBar = () => {
@@ -61,12 +61,9 @@ const AuthenticatedNavBar = () => {
                             <Typography textAlign="center">Orders View</Typography>
                         </MenuItem>
                     }
-                    {
-                        isRestaurateur &&
-                        <MenuItem onClick={() => navigate(PAGE_ADMIN_ORDERS)}>
-                            <Typography textAlign="center">Product Orders View</Typography>
-                        </MenuItem>
-                    }
+                    <MenuItem onClick={() => navigate(PAGE_PRODUCTS_ORDERS)}>
+                        <Typography textAlign="center">Product Orders</Typography>
+                    </MenuItem>
                     <MenuItem onClick={logoutHandler}>
                         <Typography textAlign="center">Logout</Typography>
                     </MenuItem>

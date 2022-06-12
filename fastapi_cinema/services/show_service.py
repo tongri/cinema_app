@@ -11,7 +11,7 @@ from crud.show_crud import (
     retrieve_show_short,
 )
 from schemas.show_schemas import ShowIn, ShowUpdate
-from utils.exceptions_utils import ObjNotFoundException, ConflictException
+from utils.exceptions_utils import ObjNotFoundException, ConflictException, NoContentException
 from utils.service_base import BaseService
 from crud.film_crud import get_film_by_id
 
@@ -73,7 +73,7 @@ class ShowService(BaseService):
 
     async def delete_show(self, show_id: int):
         if not await retrieve_show_short(self.db, show_id):
-            raise ObjNotFoundException("Show", "id", show_id)
+            raise NoContentException
 
         if await is_show_busy(self.db, show_id):
             raise ConflictException("You can't delete show with sold tickets")

@@ -4,7 +4,7 @@ import {PAGE_MAIN} from '../consts/routes'
 import {Box, CircularProgress} from '@mui/material'
 
 
-const AdminRoute = ({ children, ...tags }) => {
+const RestRoute = ({ children, ...tags }) => {
     const {token, is_restaurateur} = useSelector(state => state.users)
 
     return is_restaurateur ? (
@@ -21,4 +21,4 @@ const AdminRoute = ({ children, ...tags }) => {
     )
 }
 
-export default AdminRoute
+export default RestRoute

@@ -17,7 +17,7 @@ class OrderService(BaseService):
         if show_busy.count + order.amount > place.size:
             raise ConflictException("Not enough free places")
 
-        await create_order(self.db, user_id, show_id, order)
+        return await create_order(self.db, user_id, show_id, order)
 
     async def get_all_orders(self, user_id: int):
         return await list_orders(self.db, user_id)

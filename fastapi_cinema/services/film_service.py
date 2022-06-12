@@ -9,7 +9,7 @@ from crud.film_crud import (
     is_film_busy,
 )
 from schemas.film_schemas import FilmIn, FilmUpdate
-from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException
+from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException, NoContentException
 from utils.service_base import BaseService
 
 
@@ -50,7 +50,10 @@ class FilmService(BaseService):
         await update_film(self.db, film_id, film)
 
     async def delete_film(self, film_id: int):
-        await self.get_film(film_id)
+
+        if not await get_film_by_id(self.db, film_id):
+            raise NoContentException
+
         if await is_film_busy(self.db, film_id):
             raise ConflictException("Film has busy shows")
         await delete_film(self.db, film_id)

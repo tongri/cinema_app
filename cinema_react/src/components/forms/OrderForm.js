@@ -1,15 +1,25 @@
 import {Box, Button, CircularProgress, TextField} from '@mui/material'
 import {useDispatch, useSelector} from 'react-redux'
 import {createOrder} from '../../_redux/actions/order.actions'
+import {CustomDialog} from '../Layout/CustomDialog'
+import {useState} from 'react'
+import {ProductsOrdersForm} from './ProductsOrdersForm'
 
 const OrderForm = ({ showId }) => {
     const dsp = useDispatch()
     const isLoading = useSelector(state => state.orders.isLoading)
+    const [isProductOrderDialogOpen, setProductOrderDialog] = useState(false)
+    const [orderId, setOrderId] = useState(0)
+
+    const handleProductOrderDialog = () => {
+        setProductOrderDialog(false)
+    }
 
     const submitHandler = (e) =>  {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
-        dsp(createOrder(showId, {amount: data.get('amount')}))
+        dsp(createOrder(showId, {amount: data.get('amount')}, setOrderId))
+        setProductOrderDialog(true)
     }
     return (
         <>
@@ -33,6 +43,13 @@ const OrderForm = ({ showId }) => {
                     { isLoading ? <CircularProgress color="inherit" size={30} /> : "buy tickets" }
                 </Button>
             </Box>
+            <CustomDialog
+                isDialogOpen={isProductOrderDialogOpen}
+                setDialog={handleProductOrderDialog}
+                title={"Order Food"}
+            >
+                <ProductsOrdersForm orderId={orderId}/>
+            </CustomDialog>
         </>
     )
 }

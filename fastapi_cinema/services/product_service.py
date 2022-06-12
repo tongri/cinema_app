@@ -4,10 +4,11 @@ from crud.product_crud import (
     get_product_by_name,
     insert_product,
     update_product,
-    is_product_busy, delete_product,
+    is_product_busy,
+    delete_product,
 )
 from schemas.product_schemas import ProductIn, ProductUpdate
-from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException
+from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException, NoContentException
 from utils.service_base import BaseService
 
 
@@ -38,7 +39,8 @@ class ProductService(BaseService):
         await update_product(self.db, product_id, product)
 
     async def delete_product(self, product_id: int):
-        await self.get_product(product_id)
+        if not await get_product_by_id(self.db, product_id):
+            raise NoContentException
         if await is_product_busy(self.db, product_id):
             raise ConflictException("Product has been already bought")
         await delete_product(self.db, product_id)

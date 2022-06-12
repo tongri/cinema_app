@@ -1,23 +1,23 @@
-import Order from './Order'
 import {MDBTable, MDBTableBody, MDBTableHead} from 'mdbreact'
+import ProductOrder from './ProductsOrder'
 
-const OrderList = ({items}) => {
+const ProductOrderList = ({items}) => {
 
     return items.length ? (
         <>
             <MDBTable>
                 <MDBTableHead>
                     <tr>
-                        <th>Film</th>
-                        <th>Show starts at</th>
-                        <th>Place</th>
+                        <th>Product</th>
                         <th>Amount</th>
+                        <th>Starts At</th>
+                        <th>Status</th>
                     </tr>
                 </MDBTableHead>
                 <MDBTableBody>
-                {items.map(order => (
-                    <Order key={order.id} {...order} />
-                ))}
+                    {items.map(productOrder => (
+                        <ProductOrder key={productOrder.id} {...productOrder} />
+                    ))}
                 </MDBTableBody>
             </MDBTable>
         </>
@@ -26,4 +26,4 @@ const OrderList = ({items}) => {
     )
 }
 
-export default OrderList
+export default ProductOrderList

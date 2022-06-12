@@ -18,9 +18,9 @@ async def read_products(
     return from_response_to_page(page, await ProductService(db).list_products())
 
 
-@router.get("/{product_Id}/", response_model=ProductOut)
+@router.get("/{product_id}/", response_model=ProductOut)
 async def retrieve_product(product_id: int, db: AsyncSession = Depends(async_get_db)):
-    return ProductService(db).get_product(product_id)
+    return await ProductService(db).get_product(product_id)
 
 
 @router.post("/", response_model=ProductOut)

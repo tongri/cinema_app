@@ -54,7 +54,6 @@ async def insert_show(db: AsyncSession, show):
 async def get_crossed_place_target(
         db: AsyncSession, place_id: int, show_time_start: datetime, show_time_end: datetime
 ):
-    a = 5
     crossed_shows = (
         await db.execute(
             text(SHOWS_OVERLAP_SELECT +

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
 
-from routers import places, user, shows, films, orders, products
+from routers import places, user, shows, films, orders, products, products_order
 from utils.exceptions_utils import AppException, app_exception_handler
 
 
@@ -29,6 +29,7 @@ app.include_router(user.router, prefix="/api")
 app.include_router(shows.router, prefix="/api")
 app.include_router(orders.router, prefix="/api")
 app.include_router(products.router, prefix="/api")
+app.include_router(products_order.router, prefix="/api")
 
 
 @app.exception_handler(AppException)

@@ -6,6 +6,7 @@ import OrderReducer from './order.reducer'
 import FilmsReducer from './films.reducer'
 import PlacesReducer from './places.reducer'
 import ProductsReducer from './products.reducer'
+import ProductsOrdersReducer from './products.orders.reducer'
 
 export default combineReducers({
     users: UsersReducer,
@@ -14,4 +15,5 @@ export default combineReducers({
     films: FilmsReducer,
     places: PlacesReducer,
     products: ProductsReducer,
+    products_orders: ProductsOrdersReducer,
 })
