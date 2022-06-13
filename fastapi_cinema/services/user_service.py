@@ -9,7 +9,7 @@ class UserService(BaseService):
         if await get_user(self.db, user.username):
             raise ObjUniqueException("User", "username", user.username)
         user_id = await create_user(self.db, user)
-
+        await self.db.commit()
         return create_access_token(UserOut(username=user.username, id=user_id).dict())
 
     async def login_user(self, user: UserIn):

@@ -28,12 +28,12 @@ async def bulk_create_orders(
     await db.execute(
         text(f"insert into products_order (product_id, order_id, amount) values " f"{params}"), args
     )
-    await db.commit()
 
 
 async def list_products_orders(db: AsyncSession, user_id: int):
     res = await db.execute(
-        text(f"{PRODUCTS_ORDERS_DETAILED_SELECT} where o.user_id = :user_id"), {"user_id": user_id}
+        text(f"{PRODUCTS_ORDERS_DETAILED_SELECT} where o.user_id = :user_id order by sh.show_time_start desc"),
+        {"user_id": user_id}
     )
 
     return accumulated_dict_fetch_all(res.cursor)
@@ -41,7 +41,7 @@ async def list_products_orders(db: AsyncSession, user_id: int):
 
 async def list_all_products_orders(db: AsyncSession):
     res = await db.execute(
-        text(f"{PRODUCTS_ORDERS_DETAILED_SELECT}")
+        text(f"{PRODUCTS_ORDERS_DETAILED_SELECT} order by sh.show_time_start desc")
     )
 
     return accumulated_dict_fetch_all(res.cursor)
@@ -63,4 +63,3 @@ async def update_product_order_status(
         text("update products_order set status = :status where id = :id"),
         {"id": product_order_id, "status": new_status}
     )
-    await db.commit()

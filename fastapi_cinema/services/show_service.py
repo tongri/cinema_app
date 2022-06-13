@@ -44,6 +44,7 @@ class ShowService(BaseService):
             raise ConflictException("There is already show held the same time in the same place")
 
         new_show_id = await insert_show(self.db, show)
+        await self.db.commit()
         return new_show_id
 
     @staticmethod
@@ -70,6 +71,7 @@ class ShowService(BaseService):
             ShowService.check_show_in_films_range_or_raise_exception(film, time_start)
 
         await update_show(self.db, show_id, show)
+        await self.db.commit()
 
     async def delete_show(self, show_id: int):
         if not await retrieve_show_short(self.db, show_id):
@@ -79,3 +81,4 @@ class ShowService(BaseService):
             raise ConflictException("You can't delete show with sold tickets")
 
         await delete_show(self.db, show_id)
+        await self.db.commit()

@@ -27,7 +27,9 @@ class FilmService(BaseService):
         if await get_film_by_name(self.db, film.name):
             raise ObjUniqueException("Film", "name", film.name)
 
-        return await insert_film(self.db, film)
+        inserted_film = await insert_film(self.db, film)
+        await self.db.commit()
+        return inserted_film
 
     async def update_film(self, film_id: int, film: FilmUpdate):
         film_to_update = await self.get_film(film_id)
@@ -48,6 +50,7 @@ class FilmService(BaseService):
             raise ConflictException("Can't move to specified date - shows are held at that time")
 
         await update_film(self.db, film_id, film)
+        await self.db.commit()
 
     async def delete_film(self, film_id: int):
 
@@ -57,3 +60,4 @@ class FilmService(BaseService):
         if await is_film_busy(self.db, film_id):
             raise ConflictException("Film has busy shows")
         await delete_film(self.db, film_id)
+        await self.db.commit()

@@ -29,7 +29,6 @@ async def insert_place(db: AsyncSession, place):
     res = await db.execute(
         text("insert into places (name, size) values (:name, :size) returning id"), place.dict()
     )
-    await db.commit()
     return res.fetchone()[0]
 
 
@@ -39,7 +38,15 @@ async def update_place(db: AsyncSession, place_id, place):
         text(f"update places set {set_command} where id = :place_id"),
         {**place.dict(exclude_unset=True), "place_id": place_id},
     )
-    await db.commit()
+
+
+async def get_max_busy_by_id(db: AsyncSession, place_id: int):
+    max_busy = await db.execute(
+        text("select count(*) from orders o inner join shows sh on o.show_id = sh.id where sh.place_id = :place_id "
+             "group by sh.id order by count desc limit 1;"),
+        {"place_id": place_id}
+    )
+    return max_busy.count
 
 
 async def is_place_busy(db: AsyncSession, place_id: int):
@@ -59,4 +66,3 @@ async def is_place_busy(db: AsyncSession, place_id: int):
 
 async def delete_place(db: AsyncSession, place_id):
     await db.execute("delete from places where id = :place_id", {"place_id": place_id})
-    await db.commit()

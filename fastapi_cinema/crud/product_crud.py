@@ -24,7 +24,6 @@ async def insert_product(db: AsyncSession, product):
         ),
         product.dict(),
     )
-    await db.commit()
     return res.fetchone()[0]
 
 
@@ -34,12 +33,10 @@ async def update_product(db: AsyncSession, product_id: int, product):
         text(f"update products set {set_command} where id = :product_id"),
         {"product_id": product_id, **product.dict(exclude_unset=True)}
     )
-    await db.commit()
 
 
 async def delete_product(db: AsyncSession, product_id: int):
     await db.execute(text("delete from products where id = :product_id"), {"product_id": product_id})
-    await db.commit()
 
 
 async def get_product_by_name(db: AsyncSession, product_name):

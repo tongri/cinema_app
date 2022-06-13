@@ -32,7 +32,6 @@ async def create_user(db: AsyncSession, user: UserIn):
     res = await db.execute(
         "insert into myusers (username, password) values (:username, :password) returning id", user.dict()
     )
-    await db.commit()
     return res.fetchone()[0]
 
 

@@ -26,7 +26,9 @@ class ProductService(BaseService):
         if await get_product_by_name(self.db, product.name):
             raise ObjUniqueException("Product", "name", product.name)
 
-        return await insert_product(self.db, product)
+        inserted_product = await insert_product(self.db, product)
+        await self.db.commit()
+        return inserted_product
 
     async def update_product(self, product_id: int, product: ProductUpdate):
         product_to_update = await self.get_product(product_id)
@@ -37,6 +39,7 @@ class ProductService(BaseService):
                 raise ObjUniqueException("Product", "name", product.name)
 
         await update_product(self.db, product_id, product)
+        await self.db.commit()
 
     async def delete_product(self, product_id: int):
         if not await get_product_by_id(self.db, product_id):
@@ -44,3 +47,4 @@ class ProductService(BaseService):
         if await is_product_busy(self.db, product_id):
             raise ConflictException("Product has been already bought")
         await delete_product(self.db, product_id)
+        await self.db.commit()

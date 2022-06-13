@@ -1,4 +1,3 @@
-from db.sql_config import film_table_name
 from utils.crud_utils import get_update_set_command
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,7 +23,6 @@ async def insert_film(db: AsyncSession, film):
         ),
         film.dict(),
     )
-    await db.commit()
     return res.fetchone()[0]
 
 
@@ -40,7 +38,6 @@ async def update_film(db: AsyncSession, film_id: int, film):
         text(f"update films set {set_command} where id = :film_id"),
         {**film.dict(exclude_unset=True), "film_id": film_id},
     )
-    await db.commit()
 
 
 async def is_legal_target_validate(db: AsyncSession, film_id, begin_date=None, end_date=None):
@@ -83,4 +80,3 @@ async def is_film_busy(db: AsyncSession, film_id):
 
 async def delete_film(db: AsyncSession, film_id):
     await db.execute(text("delete from films where id = :film_id"), {"film_id": film_id})
-    await db.commit()

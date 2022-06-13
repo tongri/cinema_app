@@ -29,7 +29,6 @@ async def create_order(db: AsyncSession, user_id: int, show_id: int, order: Orde
         ),
         {"user_id": user_id, "show_id": show_id, "amount": order.amount},
     )
-    await db.commit()
     return res.fetchone()[0]
 
 

@@ -33,6 +33,7 @@ class ProductsOrderService(BaseService):
             )
 
         await bulk_create_orders(self.db, order_id, products_orders)
+        await self.db.commit()
 
     async def fetch_products_orders(self, user: UserOut):
         return await list_products_orders(self.db, user.id)
@@ -48,3 +49,4 @@ class ProductsOrderService(BaseService):
             raise ConflictException(f"Product order {order_id} already has status {status}")
 
         await update_product_order_status(self.db, order_id, status)
+        await self.db.commit()

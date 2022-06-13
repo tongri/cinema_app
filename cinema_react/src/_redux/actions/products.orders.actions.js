@@ -60,7 +60,7 @@ export const updateProductOrderStatus = (productOrderId, newStatus) => async (di
             {},
             getConfig(getState)
         )
-        dispatch(loadProductOrders())
+        dispatch(restLoadProductOrders())
     } catch (e) {
         console.log(e)
     }

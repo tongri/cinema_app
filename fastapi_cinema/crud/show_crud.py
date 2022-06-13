@@ -47,7 +47,6 @@ async def insert_show(db: AsyncSession, show):
         ),
         show.dict(),
     )
-    await db.commit()
     return res.fetchone()
 
 
@@ -74,20 +73,10 @@ async def update_show(db: AsyncSession, show_id, show):
         text(f"update shows set {set_command} where id = :show_id"),
         {**show.dict(exclude_unset=True), "show_id": show_id},
     )
-    await db.commit()
-
-
-async def update_show_busy(db: AsyncSession, show_id: int, increased_by: int):
-    await db.execute(
-        text("update shows set busy = busy + :increased_by where id = :show_id"),
-        {"increased_by": increased_by, "show_id": show_id}
-    )
-    await db.commit()
 
 
 async def delete_show(db: AsyncSession, show_id):
     await db.execute("delete from shows where id = :show_id", {"show_id": show_id})
-    await db.commit()
 
 
 async def is_show_busy(db: AsyncSession, show_id: int):
