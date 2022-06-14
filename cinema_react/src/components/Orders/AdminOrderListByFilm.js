@@ -1,7 +1,7 @@
 import {MDBTable, MDBTableBody, MDBTableHead} from 'mdbreact'
-import AdminOrder from './AdminOrder'
+import AdminOrderByFilm from './AdminOrderByFilm'
 
-const AdminOrderList = ({ items }) => {
+const AdminOrderListByFilm = ({items}) => {
 
     return items.length ? (
         <>
@@ -9,17 +9,13 @@ const AdminOrderList = ({ items }) => {
                 <MDBTableHead>
                     <tr>
                         <th>Film</th>
-                        <th>Place</th>
+                        <th>Show starts at</th>
                         <th>Amount</th>
-                        <th>Starts At</th>
-                        <th>Status</th>
-                        <th>Accept</th>
-                        <th>Decline</th>
                     </tr>
                 </MDBTableHead>
                 <MDBTableBody>
                     {items.map(order => (
-                        <AdminOrder key={order.id} {...order} />
+                        <AdminOrderByFilm {...order} />
                     ))}
                 </MDBTableBody>
             </MDBTable>
@@ -29,4 +25,4 @@ const AdminOrderList = ({ items }) => {
     )
 }
 
-export default AdminOrderList
+export default AdminOrderListByFilm

@@ -33,8 +33,9 @@ async def create_film(film: FilmIn, _=Depends(get_admin), db: AsyncSession = Dep
 async def patch_film(
     film_id: int, film: FilmUpdate, _=Depends(get_admin), db: AsyncSession = Depends(async_get_db)
 ):
-    await FilmService(db).update_film(film_id=film_id, film=film)
-    return await FilmService(db).get_film(film_id)
+    service = FilmService(db)
+    await service.update_film(film_id=film_id, film=film)
+    return await service.get_film(film_id)
 
 
 @router.delete("/{film_id}/", status_code=status.HTTP_200_OK)

@@ -43,10 +43,13 @@ class ProductsOrderService(BaseService):
 
     async def update_order_status(self, order_id: int, status: str):
         if not (product_order := await get_product_order(self.db, order_id)):
-            raise ObjNotFoundException("Product", "id", order_id)
+            raise ObjNotFoundException("Product order", "id", order_id)
 
         if product_order.status == status:
             raise ConflictException(f"Product order {order_id} already has status {status}")
+
+        if product_order.status == "blocked":
+            raise ConflictException(f"Product order {order_id} already has status blocked")
 
         await update_product_order_status(self.db, order_id, status)
         await self.db.commit()

@@ -53,10 +53,10 @@ async def is_legal_target_validate(db: AsyncSession, film_id, begin_date=None, e
         sql_args["begin_date"] = begin_date
 
     if end_date:
-        conditions.append("show_time_start < :begin_date")
-        sql_args["begin_date"] = begin_date
+        conditions.append("show_time_start > :end_date")
+        sql_args["end_date"] = end_date
 
-    sql_comm_cond = " and ".join(conditions)
+    sql_comm_cond = " or ".join(conditions)
 
     shows_overlapped = (
         await db.execute(

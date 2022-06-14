@@ -8,6 +8,7 @@ from crud.place_crud import (
     delete_place, get_max_busy_by_id,
 )
 from schemas.place_schemas import PlaceIn, PlaceUpdate
+from utils.crud_utils import dict_fetch_one
 from utils.exceptions_utils import ObjNotFoundException, ObjUniqueException, ConflictException, NoContentException
 from utils.service_base import BaseService
 
@@ -38,11 +39,12 @@ class PlaceService(BaseService):
             if place_id != place_with_same_name.id:
                 raise ObjUniqueException("Place", "name", place.name)
 
-        if place.size and place.size < (max_busy := await get_max_busy_by_id(self.db, place_id)):
-            raise ConflictException(
-                f"You can't set place size {place.size} because there is show with sold {max_busy} tickets on "
-                f"this place"
-            )
+        if place.size and (max_busy := await get_max_busy_by_id(self.db, place_id)):
+            if place.size < max_busy:
+                raise ConflictException(
+                    f"You can't set place size {place.size} because there is show with sold {max_busy} tickets on "
+                    f"this place"
+                )
 
         await update_place(self.db, place_id, place)
         await self.db.commit()

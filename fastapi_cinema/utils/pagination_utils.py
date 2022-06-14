@@ -8,7 +8,7 @@ class PaginationParams:
 def from_response_to_page(page: PaginationParams, items) -> dict:
     return {
         "total": len(items),
-        "size": len(items) if page.all_objects else page.size,
+        "size": len(items) or 1 if page.all_objects else page.size,
         "items": items if page.all_objects else items[(page.page - 1) * page.size : page.page * page.size],
         "page": page.page,
     }

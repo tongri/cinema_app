@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import Toolbar from '@mui/material/Toolbar'
 import {
-    PAGE_ADMIN_ORDERS,
+    PAGE_ADMIN_ORDERS, PAGE_ADMIN_ORDERS_BY_FILMS,
     PAGE_FILMS,
     PAGE_MAIN,
     PAGE_PLACES,
@@ -34,7 +34,9 @@ const NavBar = ({ anchorElNav, handleCloseNavMenu, handleOpenNavMenu, children }
 
     useEffect(() => {
         if (is_staff) return setPages(
-            prev => [...prev, {name: "Places", path: PAGE_PLACES}, {name: "All Orders", path: PAGE_ADMIN_ORDERS}]
+            prev => [...prev, {name: "Places", path: PAGE_PLACES}, {name: "All Orders", path: PAGE_ADMIN_ORDERS},
+                // {name: "Accepted Orders By Film", path: PAGE_ADMIN_ORDERS_BY_FILMS}
+            ]
         )
         if (is_restaurateur) return setPages(
             prev => [...prev,

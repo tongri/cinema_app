@@ -31,11 +31,11 @@ const RestProductOrder = ({id, product, order, amount, status}) => {
             </td>
             <td>
                 {
-                    status !== "accepted" && <DoneOutlinedIcon onClick={() => acceptOrder()}/>
+                    status !== "blocked" && status !== "accepted" && <DoneOutlinedIcon onClick={() => acceptOrder()}/>
                 }
             </td>
             <td>
-                {status !== "declined" && <ClearOutlinedIcon onClick={() => declineOrder()}/>}
+                {status !== "blocked" && status !== "declined" && <ClearOutlinedIcon onClick={() => declineOrder()}/>}
             </td>
         </tr>
     </>

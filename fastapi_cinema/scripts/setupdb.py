@@ -19,6 +19,7 @@ def create_tables():
             print(f"Configuring table {table['name']}")
             command = prepare_sql(table)
             session.execute(command)
+            session.execute(command)
         session.commit()
 
 

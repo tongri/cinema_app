@@ -4,7 +4,7 @@ from utils.crud_utils import accumulated_dict_fetch_all
 from schemas.order_schemas import OrderIn
 
 ORDERS_DETAILED_SELECT = (
-    "select o.id as id, amount, price as show__price,"
+    "select o.id as id, amount, price as show__price, status,"
     " s.id as show__id, p.name as show__place__name, p.size as show__place__size,"
     " p.id as show__place__id, f.id as show__film__id, f.name as show__film__name, "
     " f.begin_date as show__film__begin_date, f.end_date as show__film__end_date,"
@@ -17,8 +17,9 @@ ORDERS_DETAILED_SELECT = (
 
 ORDERS_BY_SHOW = (
     "select total, films.name film_name, show_time_start from (select sum(amount) as total, sh.id, sh.show_time_start, "
-    " sh.film_id from shows sh join orders o on o.show_id = sh.id join films f on f.id = sh.film_id group by sh.id) "
-    " shows_orders inner join films on films.id = shows_orders.film_id;"
+    " sh.film_id from shows sh join orders o on o.show_id = sh.id join films f on f.id = sh.film_id group by sh.id"
+    " where o.status = 'accepted') "
+    " shows_orders inner join films on films.id = shows_orders.film_id"
 )
 
 
@@ -39,6 +40,13 @@ async def list_orders(db: AsyncSession, user_id: int):
     return accumulated_dict_fetch_all(res.cursor)
 
 
+async def list_orders_admin(db: AsyncSession):
+    res = await db.execute(
+        text(ORDERS_DETAILED_SELECT)
+    )
+    return accumulated_dict_fetch_all(res.cursor)
+
+
 async def get_order(db: AsyncSession, order_id: int):
     return (
         await db.execute(
@@ -50,10 +58,20 @@ async def get_order(db: AsyncSession, order_id: int):
 
 async def get_orders_amount_by_show(db: AsyncSession, show_id: int):
     res = await db.execute(
-        text("select count(*) from orders where show_id = :show_id"), {"show_id": show_id}
+        text("select count(*) from orders where show_id = :show_id and status = 'accepted'"),
+        {"show_id": show_id}
     )
     return res.fetchone()
 
 
 async def list_orders_by_films(db: AsyncSession):
-    return (await db.execute(text(ORDERS_BY_SHOW))).fetchall()
+    return (await db.execute(text(f"{ORDERS_BY_SHOW} where status = 'accepted'"))).fetchall()
+
+
+async def update_order_status(
+        db: AsyncSession, order_id: int, new_status: str
+):
+    await db.execute(
+        text("update orders set status = :status where id = :id"),
+        {"id": order_id, "status": new_status}
+    )

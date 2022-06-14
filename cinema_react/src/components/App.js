@@ -12,8 +12,11 @@ import {
     PAGE_ORDERS,
     PAGE_FILMS,
     PAGE_PLACES,
-    PAGE_ADMIN_ORDERS,
-    PAGE_PRODUCTS, PAGE_PRODUCTS_ORDERS, PAGE_REST_PRODUCTS_ORDERS
+    PAGE_PRODUCTS,
+    PAGE_PRODUCTS_ORDERS,
+    PAGE_REST_PRODUCTS_ORDERS,
+    PAGE_ADMIN_ORDERS_BY_FILMS, PAGE_ADMIN_ORDERS,
+
 } from '../consts/routes'
 import PublicRoute from '../routes/PublicRoute'
 import PrivateRoute from '../routes/PrivateRoute'
@@ -22,10 +25,11 @@ import FilmPage from '../pages/FilmPage'
 import AdminRoute from '../routes/AdminRoute'
 import PlacePage from '../pages/PlacePage'
 import OrderPage from '../pages/OrdersPage'
-import AdminOrderPage from '../pages/AdminOrdersPage'
 import ProductPage from '../pages/ProductsPage'
 import ProductOrderPage from '../pages/ProductsOrdersPage'
 import RestProductsOrdersPage from '../pages/RestProductsOrdersPage'
+import AdminOrderPageByFilm from '../pages/AdminOrderPageByFilm'
+import AdminOrderPage from '../pages/AdminOrderPage'
 
 
 export const App = () => {
@@ -44,7 +48,8 @@ export const App = () => {
 
                 <Route path={PAGE_LOGIN} element={<PublicRoute><Authentication /></PublicRoute>} />
                 <Route path={PAGE_ORDERS} element={<PrivateRoute><OrderPage /></PrivateRoute>} />
-                <Route path={PAGE_ADMIN_ORDERS} element={<PrivateRoute><AdminOrderPage /></PrivateRoute>} />
+                {/*<Route path={PAGE_ADMIN_ORDERS_BY_FILMS} element={<AdminRoute><AdminOrderPageByFilm /></AdminRoute>} />*/}
+                <Route path={PAGE_ADMIN_ORDERS} element={<AdminRoute><AdminOrderPage /></AdminRoute>} />
                 <Route path={PAGE_PLACES} element={<AdminRoute><PlacePage /></AdminRoute>} />
                 <Route path={PAGE_PRODUCTS} element={<RestRoute><ProductPage /></RestRoute>} />
                 <Route path={PAGE_PRODUCTS_ORDERS} element={<PrivateRoute><ProductOrderPage /></PrivateRoute>} />

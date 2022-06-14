@@ -1,4 +1,4 @@
-const Order = ({amount, show, place}) => {
+const Order = ({amount, show, status}) => {
     return (
         <tr>
             <td>
@@ -12,6 +12,9 @@ const Order = ({amount, show, place}) => {
             </td>
             <td>
                 {amount}
+            </td>
+            <td>
+                {status}
             </td>
         </tr>
     )

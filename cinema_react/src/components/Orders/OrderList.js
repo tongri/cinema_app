@@ -12,6 +12,7 @@ const OrderList = ({items}) => {
                         <th>Show starts at</th>
                         <th>Place</th>
                         <th>Amount</th>
+                        <th>Status</th>
                     </tr>
                 </MDBTableHead>
                 <MDBTableBody>

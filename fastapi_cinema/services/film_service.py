@@ -46,7 +46,7 @@ class FilmService(BaseService):
         elif film.end_date and not film.begin_date and film.end_date < prev_begin_date:
             raise ConflictException("Film's end date must be set before its begin")
 
-        if not is_legal_target_validate(self.db, film_id, film.begin_date, film.end_date):
+        if not await is_legal_target_validate(self.db, film_id, film.begin_date, film.end_date):
             raise ConflictException("Can't move to specified date - shows are held at that time")
 
         await update_film(self.db, film_id, film)

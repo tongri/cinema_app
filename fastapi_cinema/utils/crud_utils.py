@@ -1,10 +1,16 @@
 from collections import namedtuple
 
 
-def dict_fetch_all(cursor) -> list:
+def dict_fetch_all(cursor) -> list[dict | None]:
     """Return all rows from a cursor as a dict"""
     columns = [col[0] for col in cursor.description]
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+def dict_fetch_one(cursor) -> dict:
+    """Return all rows from a cursor as a dict"""
+    columns = [col[0] for col in cursor.description]
+    return dict(zip(columns, cursor.fetchone()))
 
 
 def accumulated_dict_fetch_all(cursor) -> list[dict]:

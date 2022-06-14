@@ -171,10 +171,16 @@ order_table = {
                 "constraints": Constraints.check("amount >= 0")
             },
             {
+                "name": "status",
+                "type": FieldTypes.varchar(30),
+                "constraints": Constraints.not_null.value,
+                "default": "default 'pending'"
+            },
+            {
                 "name": Constraints.foreign_key("user_id", user_table_name, "id", "cascade")
             },
             {
-                "name": Constraints.foreign_key("show_id", show_table_name, "id", "set null")
+                "name": Constraints.foreign_key("show_id", show_table_name, "id", "cascade")
             }
         ],
     }
@@ -194,7 +200,7 @@ product_table = {
             },
             {
                 "name": "price",
-                "type": FieldTypes.smallint,
+                "type": FieldTypes.smallint.value,
                 "constraints": Constraints.check("price > 0")
             }
         ],
@@ -225,10 +231,10 @@ product_order_table = {
                 "name": "status",
                 "type": FieldTypes.varchar(30),
                 "constraints": Constraints.not_null.value,
-                "default": "default 'pending'"
+                "default": "default 'blocked'"
             },
             {
-                "name": Constraints.foreign_key("product_id", product_table_name, "id", "set null")
+                "name": Constraints.foreign_key("product_id", product_table_name, "id", "cascade")
             },
             {
                 "name": Constraints.foreign_key("order_id", order_table_name, "id", "cascade")

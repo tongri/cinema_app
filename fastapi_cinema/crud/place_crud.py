@@ -13,7 +13,8 @@ async def list_places(db: AsyncSession):
 async def get_place_by_id(db: AsyncSession, place_id: int):
     return (
         await db.execute(
-            "select * from places where id = :place_id limit 1", {"place_id": place_id}
+            text("select * from places where id = :place_id limit 1"),
+            {"place_id": place_id}
         )
     ).fetchone()
 
@@ -41,12 +42,14 @@ async def update_place(db: AsyncSession, place_id, place):
 
 
 async def get_max_busy_by_id(db: AsyncSession, place_id: int):
-    max_busy = await db.execute(
-        text("select count(*) from orders o inner join shows sh on o.show_id = sh.id where sh.place_id = :place_id "
-             "group by sh.id order by count desc limit 1;"),
-        {"place_id": place_id}
-    )
-    return max_busy.count
+    max_busy = (
+        await db.execute(
+            text("select count(*) from orders o inner join shows sh on o.show_id = sh.id where sh.place_id = :place_id "
+                "group by sh.id order by count desc limit 1;"),
+            {"place_id": place_id}
+        )
+    ).fetchone()
+    return max_busy.count if max_busy else max_busy
 
 
 async def is_place_busy(db: AsyncSession, place_id: int):
@@ -55,9 +58,10 @@ async def is_place_busy(db: AsyncSession, place_id: int):
     show_with_busy_place = (
         await db.execute(
             text(
-                "select count(*) from shows join orders o on o.show_id = shows.id where shows.place_id = :id"
+                "select count(*) from shows sh join orders o"
+                " on o.show_id = sh.id where sh.place_id = :id and sh.show_time_start < :start_time"
             ),
-            {"place_id": place_id, "start_time": datetime.now()},
+            {"id": place_id, "start_time": datetime.now()},
         )
     ).fetchone()
 

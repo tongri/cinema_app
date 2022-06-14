@@ -15,6 +15,7 @@ class OrderOut(OrderBase):
     id: int
     amount: int
     show: ShowOut
+    status: str
 
 
 class OrderByShow(BaseModel):
