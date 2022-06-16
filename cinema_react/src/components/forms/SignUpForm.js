@@ -10,15 +10,15 @@ export const SignUpForm = () => {
     const submitHandler = (e) => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
-        const username = data.get('username')
+        const email = data.get('email')
         const password = data.get('password')
         const confirm_password = data.get('confirm_password')
 
-        if (!username || !password) return alert("Fields can't be empty")
+        if (!email || !password) return alert("Fields can't be empty")
         if (password < 8) return alert("Make longer password")
         if (password !== confirm_password) return alert("Passwords must match")
 
-        dsp(signUpUser({username, password}))
+        dsp(signUpUser({email, password}))
     }
     return (
         <>
@@ -28,9 +28,9 @@ export const SignUpForm = () => {
                     margin="normal"
                     required
                     fullWidth
-                    id="username"
-                    label="Username"
-                    name="username"
+                    id="email"
+                    label="Email"
+                    name="email"
                     autoFocus
                 />
                 <TextField

@@ -19,10 +19,10 @@ def check_password(plain_text_password, hashed_password):
     return pbkdf2_sha256.verify(plain_text_password, hashed_password)
 
 
-async def get_user(db: AsyncSession, username: str):
+async def get_user(db: AsyncSession, email: str):
     return (
         await db.execute(
-            text("select * from myusers where username = :username limit 1"), {"username": username}
+            text("select * from myusers where email = :email limit 1"), {"email": email}
         )
     ).fetchone()
 
@@ -30,7 +30,7 @@ async def get_user(db: AsyncSession, username: str):
 async def create_user(db: AsyncSession, user: UserIn):
     user.password = get_hashed_password(user.password)
     res = await db.execute(
-        "insert into myusers (username, password) values (:username, :password) returning id", user.dict()
+        "insert into myusers (email, password) values (:email, :password) returning id", user.dict()
     )
     return res.fetchone()[0]
 
@@ -41,8 +41,8 @@ def create_access_token(data: dict,) -> str:
     return jwt.encode(to_encode, config("secret_key"), algorithm=config("algorithm"))
 
 
-async def authenticate_user(db: AsyncSession, username: str, password: str) -> UserOut | None:
-    user = await get_user(db, username)
+async def authenticate_user(db: AsyncSession, email: str, password: str) -> UserOut | None:
+    user = await get_user(db, email)
     if not user:
         return
     if not check_password(password, user.password):

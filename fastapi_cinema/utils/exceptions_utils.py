@@ -40,5 +40,5 @@ class NoContentException(AppException):
 class UnAuthorizedException(AppException):
     def __init__(self):
         super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED, message="Incorrect username or password"
+            status_code=status.HTTP_401_UNAUTHORIZED, message="Incorrect email or password"
         )

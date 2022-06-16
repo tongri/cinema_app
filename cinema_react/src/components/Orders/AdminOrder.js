@@ -3,7 +3,7 @@ import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import {useDispatch} from 'react-redux'
 import {updateOrderStatus} from '../../_redux/actions/order.actions'
 
-const AdminOrder = ({id, show, amount, status}) => {
+const AdminOrder = ({id, show, amount, status, user}) => {
     const dsp = useDispatch()
 
     const acceptOrder = () => {
@@ -32,14 +32,22 @@ const AdminOrder = ({id, show, amount, status}) => {
                 <td>
                     {status}
                 </td>
+
                 <td>
-                    {
-                        status !== "accepted" && <DoneOutlinedIcon onClick={() => acceptOrder()}/>
-                    }
+                    {user.email}
                 </td>
-                <td>
-                    {status !== "declined" && <ClearOutlinedIcon onClick={() => declineOrder()}/>}
-                </td>
+                {
+                    status === "pending" &&
+                    <>
+                        <td>
+
+                            <DoneOutlinedIcon onClick={() => acceptOrder()}/>
+                        </td>
+                        <td>
+                            <ClearOutlinedIcon onClick={() => declineOrder()}/>
+                        </td>
+                    </>
+                }
             </tr>
         </>
     )

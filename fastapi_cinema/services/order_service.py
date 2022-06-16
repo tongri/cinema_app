@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from enum import Enum
 
 from crud.order_crud import (
@@ -19,16 +20,24 @@ from schemas.order_schemas import OrderIn
 
 
 class OrderStatuses(Enum):
-    pending = "pending"
     accepted = "accepted"
     declined = "declined"
+
+    @classmethod
+    def all(cls) -> list[str]:
+        return [i.value for i in cls]
 
 
 class OrderService(BaseService):
     async def create_order(self, user_id: int, show_id: int, order: OrderIn):
         show = await retrieve_show_short(self.db, show_id)
+
         if not show:
             raise ObjNotFoundException("Show", "id", show_id)
+
+        if datetime.now() + timedelta(hours=2) >= show.show_time_start:
+            raise ConflictException("You can maximum in two hours before start")
+
         place = await get_place_by_id(self.db, show.place_id)
 
         show_busy = await get_orders_amount_by_show(self.db, show_id)
@@ -52,11 +61,27 @@ class OrderService(BaseService):
         if not (order := await get_order(self.db, order_id)):
             raise ObjNotFoundException("Order", "id", order_id)
 
-        if order.status == "status":
+        if order.status == status:
             raise ConflictException(f"Order {order_id} already has status {status}")
+
+        if order.status in OrderStatuses.all():
+            raise ConflictException(
+                f"Order {order_id} already has already been {order.status}"
+            )
 
         show_busy = await get_orders_amount_by_show(self.db, order.show_id)
         show = await retrieve_show_short(self.db, order.show_id)
+
+        if show.show_time_start < datetime.now():
+            await update_product_orders_status_by_order(
+                self.db, order_id, "blocked"
+            )
+            await update_order_status(self.db, order_id, OrderStatuses.declined.value)
+            await self.db.commit()
+            raise ConflictException(
+                "You can't accept order to outdated show. Setting to declined"
+            )
+
         place = await get_place_by_id(self.db, show.place_id)
 
         if order.amount + show_busy.count > place.size:
@@ -64,13 +89,11 @@ class OrderService(BaseService):
 
         await update_order_status(self.db, order_id, status)
 
-        if status == OrderStatuses.accepted.value:
-            await update_product_orders_status_by_order(
-                self.db, order_id, ProductOrderStatuses.pending.value
-            )
+        await update_product_orders_status_by_order(
+            self.db,
+            order_id,
+            "pending" if status == OrderStatuses.accepted.value
+            else "blocked",
+        )
 
-        if status == OrderStatuses.declined.value:
-            await update_product_orders_status_by_order(
-                self.db, order_id, "blocked"
-            )
         await self.db.commit()

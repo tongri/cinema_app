@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
 from enum import Enum
 
-from crud.order_crud import get_order
+from crud.order_crud import get_order, get_show_by_order_id
 from crud.product_order_crud import (
     bulk_create_orders,
     list_products_orders,
@@ -14,9 +15,12 @@ from utils.service_base import BaseService
 
 
 class ProductOrderStatuses(Enum):
-    pending = "pending"
     accepted = "accepted"
     declined = "declined"
+
+    @classmethod
+    def all(cls) -> list[str]:
+        return [i.value for i in cls]
 
 
 class ProductsOrderService(BaseService):
@@ -26,6 +30,10 @@ class ProductsOrderService(BaseService):
     ):
         if not (order := await get_order(self.db, order_id)):
             raise ObjNotFoundException("Order", "id", order_id)
+
+        show = await get_show_by_order_id(self.db, order.id)
+        if datetime.now() + timedelta(hours=2) >= show.show_time_start:
+            raise ConflictException("You can maximum in two hours before start")
 
         if order.user_id != user.id:
             raise ConflictException(
@@ -41,15 +49,22 @@ class ProductsOrderService(BaseService):
     async def fetch_admin_products_orders(self):
         return await list_all_products_orders(self.db)
 
-    async def update_order_status(self, order_id: int, status: str):
-        if not (product_order := await get_product_order(self.db, order_id)):
-            raise ObjNotFoundException("Product order", "id", order_id)
+    async def update_order_status(self, product_order_id: int, status: str):
+        if not (product_order := await get_product_order(self.db, product_order_id)):
+            raise ObjNotFoundException("Product order", "id", product_order_id)
 
-        if product_order.status == status:
-            raise ConflictException(f"Product order {order_id} already has status {status}")
+        show = await get_show_by_order_id(self.db, product_order.order_id)
+
+        if show.show_time_start < datetime.now():
+            raise ConflictException(
+                "You can't accept order to outdated show. Setting to declined"
+            )
+
+        if product_order.status in ProductOrderStatuses.all():
+            raise ConflictException(f"Product order {product_order_id} already has status {status}")
 
         if product_order.status == "blocked":
-            raise ConflictException(f"Product order {order_id} already has status blocked")
+            raise ConflictException(f"Product order {product_order_id} already has status blocked")
 
-        await update_product_order_status(self.db, order_id, status)
+        await update_product_order_status(self.db, product_order_id, status)
         await self.db.commit()

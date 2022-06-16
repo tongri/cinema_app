@@ -4,3 +4,8 @@ fastapi_cinema/.env
 fastapi_cinema/venv
 cinema_react/node_modules
 *__pycache__*
+fastapi_cinema/logs/
+venv
+.env
+mail_service/.env
+mail_venv

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from fastapi_pagination import Page
 from dependencies import async_get_db, get_current_user, get_restaurateur
-from schemas.products_order_shemas import ProductOrderIn, ProductOrderOut
+from schemas.products_order_shemas import ProductOrderIn, ProductOrderOut, ProductOrderOutAdmin
 from schemas.user_schemas import UserOut
 from services.products_order_service import ProductsOrderService, ProductOrderStatuses
 from utils.pagination_utils import PaginationParams, from_response_to_page
@@ -23,7 +23,7 @@ async def bulk_create_products_orders(
     )
 
 
-@router.get("/rest_view/", response_model=Page[ProductOrderOut])
+@router.get("/rest_view/", response_model=Page[ProductOrderOutAdmin])
 async def admin_read_products_orders(
     page: PaginationParams = Depends(PaginationParams),
     db: AsyncSession = Depends(async_get_db),

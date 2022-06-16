@@ -12,10 +12,10 @@ services:
       - BACKEND_URL
 
   mydb:
-    image: postgres
+    image: postgres:latest
     environment:
-      - POSTGRES_DB
-      - POSTGRES_PASSWORD
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     expose:
       - 5432
 
@@ -34,6 +34,13 @@ services:
       - secret_key
       - algorithm
       - access_token_expire_minutes
+      - REDIS_HOST
     command: uvicorn main:app --reload --host 0.0.0.0
     depends_on:
       - mydb
+      - redis_broker
+
+  redis_broker:
+    image: redis/redis-stack
+    ports:
+      - "6379:6379"

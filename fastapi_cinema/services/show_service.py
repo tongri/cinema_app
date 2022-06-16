@@ -21,10 +21,10 @@ from crud.film_crud import get_film_by_id
 
 class ShowService(BaseService):
     async def retrieve_show(self, show_id: int):
-        film = await retrieve_show(self.db, show_id)
-        if not film:
+        show = await retrieve_show(self.db, show_id)
+        if not show:
             raise ObjNotFoundException("Show", "id", show_id)
-        return film
+        return show
 
     async def retrieve_show_short(self, show_id: int):
         film = await retrieve_show_short(self.db, show_id)
@@ -36,7 +36,10 @@ class ShowService(BaseService):
         return await list_shows(self.db)
 
     async def create_show(self, show: ShowIn):
-        film = await get_film_by_id(self.db, show.film_id)
+        film = await FilmService(self.db).get_film(show.film_id)
+
+        place = await PlaceService(self.db).get_place(show.place_id)
+
         show_time_end = show.show_time_start + timedelta(minutes=film.lasts_minutes)
 
         ShowService.check_show_in_films_range_or_raise_exception(film, show.show_time_start)

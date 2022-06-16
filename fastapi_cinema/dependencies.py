@@ -4,10 +4,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-
 from db.async_session import async_session
 from crud.user_crud import get_user
 from schemas.user_schemas import TokenData, UserOut
+from aioredis import from_url, Redis
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -33,7 +33,7 @@ async def get_current_user(db: AsyncSession = Depends(async_get_db), token: str 
     except JWTError as e:
         raise credentials_exception from e
 
-    user = await get_user(db, username=token_data.username)
+    user = await get_user(db, email=token_data.email)
 
     if user is None:
         raise credentials_exception
@@ -51,3 +51,9 @@ async def get_restaurateur(user: UserOut = Depends(get_current_user)):
     if not user.is_restaurateur:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
     return user
+
+
+async def init_redis_pool() -> Redis:
+    pool = from_url(f"redis://{config('REDIS_HOST')}", decode_responses=True)
+    async with pool.client() as conn:
+        yield conn

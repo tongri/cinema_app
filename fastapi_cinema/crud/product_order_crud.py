@@ -10,10 +10,26 @@ PRODUCTS_ORDERS_DETAILED_SELECT = (
     "order__show__show_time_start, f.id as order__show__film__id, f.name as order__show__film__name, "
     "f.begin_date as order__show__film__begin_date, f.end_date as order__show__film__end_date, "
     "pl.id as order__show__place__id, pl.name as order__show__place__name, "
-    "pl.size as order__show__place__size, f.lasts_minutes as order__show__film__lasts_minutes, o.status as order__status "
+    "pl.size as order__show__place__size, f.lasts_minutes as order__show__film__lasts_minutes, "
+    "o.status as order__status from products_order po inner join products p on p.id = po.product_id"
+    " inner join orders o on o.id = po.order_id inner join shows sh on o.show_id = sh.id"
+    " inner join films f on sh.film_id = f.id inner join places pl on pl.id = sh.place_id"
+)
+
+
+PRODUCTS_ORDERS_DETAILED_SELECT_ADMIN = (
+    "select po.id as id, po.amount as amount, po.product_id as product_id, p.id as product__id, po.status as status,"
+    " p.price as product__price, o.id as order__id, o.amount as order__amount, p.name as product__name,"
+    " sh.id as order__show__id, sh.price as order__show__price, sh.show_time_start as "
+    "order__show__show_time_start, f.id as order__show__film__id, f.name as order__show__film__name, "
+    "f.begin_date as order__show__film__begin_date, f.end_date as order__show__film__end_date, "
+    "pl.id as order__show__place__id, pl.name as order__show__place__name, "
+    "pl.size as order__show__place__size, f.lasts_minutes as order__show__film__lasts_minutes, "
+    "o.status as order__status, u.id as order__user__id, u.email as order__user__email "
     "from products_order po inner join products p on p.id = po.product_id"
     " inner join orders o on o.id = po.order_id inner join shows sh on o.show_id = sh.id"
     " inner join films f on sh.film_id = f.id inner join places pl on pl.id = sh.place_id"
+    " inner join myusers u on u.id = o.user_id"
 )
 
 
@@ -41,7 +57,7 @@ async def list_products_orders(db: AsyncSession, user_id: int):
 
 async def list_all_products_orders(db: AsyncSession):
     res = await db.execute(
-        text(f"{PRODUCTS_ORDERS_DETAILED_SELECT} order by sh.show_time_start desc")
+        text(f"{PRODUCTS_ORDERS_DETAILED_SELECT_ADMIN} order by sh.show_time_start desc")
     )
 
     return accumulated_dict_fetch_all(res.cursor)

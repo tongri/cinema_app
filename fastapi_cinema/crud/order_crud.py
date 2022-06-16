@@ -15,10 +15,23 @@ ORDERS_DETAILED_SELECT = (
 )
 
 
+ORDERS_DETAILED_SELECT_ADMIN = (
+    "select o.id as id, amount, price as show__price, status,"
+    " s.id as show__id, p.name as show__place__name, p.size as show__place__size,"
+    " p.id as show__place__id, f.id as show__film__id, f.name as show__film__name, "
+    " f.begin_date as show__film__begin_date, f.end_date as show__film__end_date,"
+    " f.lasts_minutes as show__film__lasts_minutes, s.show_time_start as show__show_time_start,"
+    " u.id as user__id, u.email as user__email"
+    " from orders o inner join shows s on o.show_id = s.id"
+    " inner join films f on f.id = s.film_id"
+    " inner join places p on s.place_id = p.id inner join myusers u on o.user_id = u.id"
+)
+
+
 ORDERS_BY_SHOW = (
     "select total, films.name film_name, show_time_start from (select sum(amount) as total, sh.id, sh.show_time_start, "
-    " sh.film_id from shows sh join orders o on o.show_id = sh.id join films f on f.id = sh.film_id group by sh.id"
-    " where o.status = 'accepted') "
+    " sh.film_id from shows sh join orders o on o.show_id = sh.id join films f on f.id = sh.film_id "
+    "where o.status = 'accepted' group by sh.id) "
     " shows_orders inner join films on films.id = shows_orders.film_id"
 )
 
@@ -42,7 +55,7 @@ async def list_orders(db: AsyncSession, user_id: int):
 
 async def list_orders_admin(db: AsyncSession):
     res = await db.execute(
-        text(ORDERS_DETAILED_SELECT)
+        text(ORDERS_DETAILED_SELECT_ADMIN)
     )
     return accumulated_dict_fetch_all(res.cursor)
 
@@ -65,7 +78,7 @@ async def get_orders_amount_by_show(db: AsyncSession, show_id: int):
 
 
 async def list_orders_by_films(db: AsyncSession):
-    return (await db.execute(text(f"{ORDERS_BY_SHOW} where status = 'accepted'"))).fetchall()
+    return (await db.execute(text(f"{ORDERS_BY_SHOW}"))).fetchall()
 
 
 async def update_order_status(
@@ -75,3 +88,14 @@ async def update_order_status(
         text("update orders set status = :status where id = :id"),
         {"id": order_id, "status": new_status}
     )
+
+
+async def get_show_by_order_id(db: AsyncSession, order_id: int):
+    res = await db.execute(
+        text(
+            "select sh.show_time_start show_time_start, sh.place_id place_id, sh.film_id film_id, sh.id id"
+            " from order o inner join shows sh on o.show_id = sh.id where o.id = :order_id limit 1"
+        ),
+        {"order_id": order_id}
+    )
+    return res.fetchone()

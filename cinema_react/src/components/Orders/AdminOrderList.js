@@ -13,6 +13,7 @@ const AdminOrderList = ({ items }) => {
                         <th>Amount</th>
                         <th>Starts At</th>
                         <th>Status</th>
+                        <th>User</th>
                         <th>Accept</th>
                         <th>Decline</th>
                     </tr>

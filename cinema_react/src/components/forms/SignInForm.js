@@ -12,10 +12,10 @@ export const SignInForm = () => {
     const submitHandler = (e) => {
         e.preventDefault()
         const data = new FormData(e.currentTarget);
-        const username = data.get('username')
+        const email = data.get('email')
         const password = data.get('password')
-        if (!username || !password) return alert("Fields can't be empty")
-        dsp(loginUser({username, password}))
+        if (!email || !password) return alert("Fields can't be empty")
+        dsp(loginUser({email, password}))
     }
     return (
         <>
@@ -25,10 +25,10 @@ export const SignInForm = () => {
                         margin="normal"
                         required
                         fullWidth
-                        id="username"
-                        label="Username"
-                        name="username"
-                        autoComplete="username"
+                        id="email"
+                        label="Email"
+                        name="email"
+                        autoComplete="email"
                         autoFocus
                     />
                     <TextField

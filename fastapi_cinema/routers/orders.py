@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from fastapi_pagination import Page
 from dependencies import get_current_user, async_get_db, get_admin
-from schemas.order_schemas import OrderIn, OrderOut, OrderByShow
+from schemas.order_schemas import OrderIn, OrderOut, OrderByShow, OrderOutAdmin
 from services.order_service import OrderService, OrderStatuses
 from schemas.user_schemas import UserOut
 from utils.pagination_utils import PaginationParams, from_response_to_page
@@ -31,7 +31,7 @@ async def list_orders(
     return from_response_to_page(page, await OrderService(db).get_all_orders(current_user.id))
 
 
-@router.get("/orders/admin_view/", response_model=Page[OrderOut])
+@router.get("/orders/admin_view/", response_model=Page[OrderOutAdmin])
 async def list_orders_admin(
     page: PaginationParams = Depends(PaginationParams),
     db: AsyncSession = Depends(async_get_db),

@@ -1,8 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 
 class User(BaseModel):
-    username: str
+    email: EmailStr
 
 
 class UserIn(User):
@@ -21,6 +21,10 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    email: EmailStr | None = None
     is_staff: bool = False
     is_restaurateur: bool = False
+
+
+class UserPublic(User):
+    id: int

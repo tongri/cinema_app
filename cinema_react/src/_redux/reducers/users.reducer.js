@@ -8,7 +8,7 @@ const initialState = {
     isLoading: false,
     is_staff: localStorage.getItem('is_staff') || null,
     is_restaurateur: localStorage.getItem('is_restaurateur') || null,
-    username: null
+    email: null
 }
 
 
@@ -43,7 +43,7 @@ const Reducer = (state = initialState, action) => {
             return {
                 ...state,
                 token: null,
-                username: null,
+                email: null,
                 isAuthenticated: false,
                 isLoading: false,
                 is_staff: false,
@@ -60,7 +60,7 @@ const Reducer = (state = initialState, action) => {
             localStorage.removeItem('is_restaurateur')
             return {
                 ...state,
-                username: null,
+                email: null,
                 token: null,
                 isAuthenticated: false,
                 is_staff: false,
