@@ -10,6 +10,7 @@ RUN virtualenv venv
 RUN . venv/bin/activate
 RUN pip install --no-cache-dir --upgrade -r /var/www/server/requirements.txt
 RUN pip install aioredis
+RUN pip install "pydantic[email]"
 
 
 COPY . /var/www/server
