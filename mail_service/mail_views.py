@@ -12,6 +12,8 @@ async def send_message(body, mail_to):
     message["To"] = "uacinema.nure@gmail.com"
     message["Subject"] = "Activity on UA Cinema"
 
+    await aiosmtplib.send(message, hostname="127.0.0.1", port=25)
+
 
 def prepare_message(message: str):
     msg = json.loads(message)
