@@ -16,7 +16,7 @@ async def send_message(body, mail_to):
     try:
         async with aiosmtplib.SMTP(hostname="smtp.gmail.com", port=465, use_tls=True) as smtp:
             await smtp.connect()
-            await smtp.login('test@gmail.com', 'password', timeout=60)  # gmail credentials
+            await smtp.login('test@gmail.com', 'password')  # gmail credentials
             await smtp.send_message(message)
     except (aiosmtplib.SMTPAuthenticationError, aiosmtplib.SMTPException) as e:
         print(f"Exception raised {e}, check  credentials or email service configuration")
