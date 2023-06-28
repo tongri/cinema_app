@@ -14,8 +14,7 @@ async def send_message(body, mail_to):
     message.set_content(body)
 
     try:
-        async with aiosmtplib.SMTP(hostname="smtp.gmail.com", port=465, use_tls=True) as smtp:
-            await smtp.connect()
+        async with aiosmtplib.SMTP(hostname="smtp.gmail.com", port=465, use_tls=True) as smtp: # auto connect/disconnect
             await smtp.login('test@gmail.com', 'password')  # gmail credentials
             await smtp.send_message(message)
     except (aiosmtplib.SMTPAuthenticationError, aiosmtplib.SMTPException) as e:
