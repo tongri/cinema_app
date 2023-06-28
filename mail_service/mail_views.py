@@ -11,6 +11,14 @@ async def send_message(body, mail_to):
     message["From"] = "uacinema.nure@localhost"
     message["To"] = "uacinema.nure@gmail.com"
     message["Subject"] = "Activity on UA Cinema"
+    message.set_content(body)
+
+    try:
+        async with aiosmtplib.SMTP(hostname="smtp.gmail.com", port=465, use_tls=True) as smtp: # auto connect/disconnect
+            await smtp.login('test@gmail.com', 'password')  # gmail credentials
+            await smtp.send_message(message)
+    except (aiosmtplib.SMTPAuthenticationError, aiosmtplib.SMTPException) as e:
+        print(f"Exception raised {e}, check  credentials or email service configuration")
 
 
 def prepare_message(message: str):
@@ -27,8 +35,6 @@ async def main():
     async for message in consumer.listen():
         if isinstance(message['data'], str):
             mail_to, message = prepare_message(message['data'])
-            print(message)
-            print(mail_to)
             if not mail_to or not message:
                 continue
             await send_message(message, mail_to)
